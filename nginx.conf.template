@@ -9,18 +9,17 @@ events {
 }
 
 stream {
+    resolver ${RESOLVER};
 
-    resolver ${RESOLVER} valid=30s;
-
-    upstream backend {
-        server ${BACKEND_HOST}:${BACKEND_PORT};
-    }
+    map ${DOLLAR}remote_addr ${DOLLAR}upstream {
+        default ${BACKEND_HOST};
+    } 
 
     server {
         listen ${LISTEN_PORT};
         proxy_connect_timeout 1s;
         proxy_timeout 3s;
-        proxy_pass backend;
+        proxy_pass ${DOLLAR}upstream:${BACKEND_PORT};
     }
 
 }
