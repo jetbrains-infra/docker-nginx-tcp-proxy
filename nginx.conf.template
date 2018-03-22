@@ -17,8 +17,6 @@ stream {
 
     server {
         listen ${LISTEN_PORT};
-        proxy_connect_timeout 1s;
-        proxy_timeout 3s;
         proxy_pass ${DOLLAR}upstream:${BACKEND_PORT};
     }
 
