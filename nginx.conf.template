@@ -1,5 +1,5 @@
 user  nginx;
-worker_processes  1;
+worker_processes  auto;
 
 error_log  /var/log/nginx/error.log warn;
 pid        /var/run/nginx.pid;
@@ -9,6 +9,21 @@ events {
 }
 
 stream {
+	
+	log_format proxy_json  escape=json '{ "time": "${DOLLAR}time_iso8601", '
+	     '"remote_addr": "${DOLLAR}remote_addr", '
+	     '"protocol": "${DOLLAR}protocol", '
+		 '"bytes_received": "${DOLLAR}bytes_received", '
+	     '"bytes_sent": "${DOLLAR}bytes_sent", '	     
+	     '"status": "${DOLLAR}status", '
+	     '"session_time": "${DOLLAR}session_time", '
+	     '"upstream_addr": "${DOLLAR}upstream_addr", '
+	     '"upstream_bytes_sent": "${DOLLAR}upstream_bytes_sent", '
+	     '"upstream_bytes_received": "${DOLLAR}upstream_bytes_received", '
+	     '"upstream_connect_time": "${DOLLAR}upstream_connect_time" }';                 
+
+	access_log /var/log/nginx/access.log proxy_json;
+
     resolver ${RESOLVER};
 
     map ${DOLLAR}remote_addr ${DOLLAR}upstream {
